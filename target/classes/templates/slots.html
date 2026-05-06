@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Available Slots</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="slots">
+<div class="site-shell">
+    <nav class="topbar">
+        <div class="brand">Tutor Scheduler</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a class="active" href="/slots">Browse Slots</a>
+            <a href="/appointments">My Appointments</a>
+        </div>
+        <div class="cta-wrap">
+            <a class="button" href="/appointments/new">Book a Session &rsaquo;</a>
+        </div>
+    </nav>
+
+    <main class="section-wrap">
+        <div class="panel" th:if="${bookingConflict}">
+            <div class="panel-body">
+                <strong>That slot was just booked by someone else.</strong>
+                Please choose another available time.
+            </div>
+        </div>
+        <div class="slots-layout">
+            <aside class="filters">
+                <h2 class="filter-title">Filters</h2>
+                <div class="filter-chip">Subject</div>
+                <div class="filter-chip">Date</div>
+                <div class="filter-chip">Time</div>
+                <div class="filter-chip">Location</div>
+            </aside>
+
+            <section class="panel">
+                <div class="panel-body">
+                    <div class="slots-header">
+                        <div>
+                            <h1>Available Slots</h1>
+                            <p class="subhead">Select a session to begin booking.</p>
+                        </div>
+                        <div class="chip"><span th:text="${#lists.size(slots)}">0</span> sessions found</div>
+                    </div>
+
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Tutor</th>
+                            <th>Subject</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Location</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="slot : ${slots}">
+                            <td th:text="${slot.tutorName}"></td>
+                            <td><span class="badge" th:text="${slot.subjectName}"></span></td>
+                            <td th:text="${slot.date}"></td>
+                            <td>
+                                <span th:text="${slot.startTime}"></span>
+                                -
+                                <span th:text="${slot.endTime}"></span>
+                            </td>
+                            <td th:text="${slot.locationName}"></td>
+                            <td>
+                                <a class="table-action" th:href="@{/appointments/new(tutorId=${slot.tutorId},date=${slot.date},startTime=${slot.startTime})}">Book &rsaquo;</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+</body>
+</html>

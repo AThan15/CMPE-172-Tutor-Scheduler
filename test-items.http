@@ -1,0 +1,15 @@
+### GET all items
+GET http://localhost:8080/items
+Accept: application/json
+
+### POST create an item
+POST http://localhost:8080/items
+Content-Type: application/json
+
+{
+  "id": 2,
+  "name": "Pen",
+  "quantity": 3
+}
+
+
