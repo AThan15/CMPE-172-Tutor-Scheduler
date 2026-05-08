@@ -2,12 +2,15 @@ package edu.sjsu.cmpe172.tutorscheduler.app.service;
 
 import java.util.List;
 import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import org.springframework.stereotype.Service;
 
 import edu.sjsu.cmpe172.tutorscheduler.app.model.Appointment;
 import edu.sjsu.cmpe172.tutorscheduler.app.model.AppointmentRequest;
 import edu.sjsu.cmpe172.tutorscheduler.app.model.AvailabilitySlot;
+import edu.sjsu.cmpe172.tutorscheduler.app.model.TutorProfile;
 import edu.sjsu.cmpe172.tutorscheduler.app.repository.AppointmentRepository;
 import edu.sjsu.cmpe172.tutorscheduler.app.repository.AvailabilityRepository;
 import edu.sjsu.cmpe172.tutorscheduler.app.service.tx.BookingTransactionService;
@@ -45,6 +48,17 @@ public class AppointmentService {
 
     public List<Appointment> getAppointments() {
         return appointmentRepository.findAll();
+    }
+
+    public List<TutorProfile> getTutors() {
+        return availabilityRepository.findTutors();
+    }
+
+    public List<Appointment> getTutorAppointments(Long tutorId) {
+        if (tutorId == null) {
+            return List.of();
+        }
+        return appointmentRepository.findByTutorId(tutorId);
     }
 
     public Appointment bookAppointment(AppointmentRequest request) {
@@ -88,6 +102,32 @@ public class AppointmentService {
 
     public Appointment getAppointment(Long id) {
         return appointmentRepository.findById(id);
+    }
+
+    public boolean cancelAppointment(Long lessonId) {
+        Appointment existing = appointmentRepository.findById(lessonId);
+        if (existing == null) {
+            log.warn("Cancel failed lessonId={} reason=not_found", lessonId);
+            return false;
+        }
+        boolean canceled = appointmentRepository.cancelById(lessonId);
+        if (canceled) {
+            log.info("Appointment canceled lessonId={} tutor={} date={} startTime={}",
+                    lessonId, existing.getTutorName(), existing.getDate(), existing.getStartTime());
+        } else {
+            log.warn("Cancel failed lessonId={} reason=already_canceled_or_not_found", lessonId);
+        }
+        return canceled;
+    }
+
+    public boolean createTutorAvailability(Long tutorId, String date, String startTime, String endTime) {
+        LocalDate parsedDate = LocalDate.parse(date);
+        LocalTime parsedStart = LocalTime.parse(startTime);
+        LocalTime parsedEnd = LocalTime.parse(endTime);
+        if (!parsedEnd.isAfter(parsedStart)) {
+            return false;
+        }
+        return availabilityRepository.insertAvailabilitySlot(tutorId, parsedDate, parsedStart, parsedEnd);
     }
 
     private void backoff(int attempts) {

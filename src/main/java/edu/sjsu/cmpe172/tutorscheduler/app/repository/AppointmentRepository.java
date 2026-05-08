@@ -55,8 +55,29 @@ public class AppointmentRepository {
         return results.isEmpty() ? null : results.get(0);
     }
 
+    public List<Appointment> findByTutorId(Long tutorId) {
+        String sql = """
+                SELECT l.LessonID, l.Status, l.Date, l.StartTime,
+                       s.StudentName, s.SEmail, t.TutorName,
+                       subj.SubjectName, loc.LocationName
+                FROM TutorLesson l
+                JOIN Student s ON l.StudentID = s.StudentID
+                JOIN Tutor t ON l.TutorID = t.TutorID
+                JOIN Subject subj ON l.SubjectID = subj.SubjectID
+                JOIN Location loc ON l.LocationID = loc.LocationID
+                WHERE l.TutorID = ?
+                ORDER BY l.Date, l.StartTime
+                """;
+        return jdbcTemplate.query(sql, new AppointmentRowMapper(), tutorId);
+    }
+
+    public boolean cancelById(Long lessonId) {
+        String sql = "UPDATE TutorLesson SET Status = 'CANCELED' WHERE LessonID = ? AND Status <> 'CANCELED'";
+        return jdbcTemplate.update(sql, lessonId) > 0;
+    }
+
     public boolean existsByTutorAndTime(Long tutorId, LocalDate date, LocalTime startTime) {
-        String sql = "SELECT 1 FROM TutorLesson WHERE TutorID = ? AND Date = ? AND StartTime = ? LIMIT 1";
+        String sql = "SELECT 1 FROM TutorLesson WHERE TutorID = ? AND Date = ? AND StartTime = ? AND Status = 'BOOKED' LIMIT 1";
         List<Integer> results = jdbcTemplate.queryForList(sql, Integer.class, tutorId, date, startTime);
         return !results.isEmpty();
     }

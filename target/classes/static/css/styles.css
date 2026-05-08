@@ -290,6 +290,8 @@ tbody tr:hover {
     color: #fff;
     font-size: 0.72rem;
     font-weight: 700;
+    border: none;
+    cursor: pointer;
 }
 
 .section-wrap {
@@ -341,6 +343,15 @@ input {
     border-radius: 8px;
     padding: 10px 11px;
     font-size: 0.86rem;
+}
+
+select {
+    border: 1px solid #c8c8c8;
+    background: #fcfcfc;
+    border-radius: 8px;
+    padding: 10px 11px;
+    font-size: 0.86rem;
+    min-width: 240px;
 }
 
 .details-grid {

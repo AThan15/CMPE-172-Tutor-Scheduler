@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import edu.sjsu.cmpe172.tutorscheduler.app.model.AvailabilitySlot;
+import edu.sjsu.cmpe172.tutorscheduler.app.model.TutorProfile;
 
 @Repository
 public class AvailabilityRepository {
@@ -27,7 +28,10 @@ public class AvailabilityRepository {
                 FROM Availability a
                 JOIN Tutor t ON a.TutorID = t.TutorID
                 LEFT JOIN TutorLesson l
-                  ON l.TutorID = a.TutorID AND l.Date = a.Date AND l.StartTime = a.StartTime
+                  ON l.TutorID = a.TutorID
+                 AND l.Date = a.Date
+                 AND l.StartTime = a.StartTime
+                 AND l.Status = 'BOOKED'
                 WHERE l.LessonID IS NULL
                 ORDER BY a.Date, a.StartTime
                 """;
@@ -44,6 +48,20 @@ public class AvailabilityRepository {
                 """;
         List<AvailabilitySlot> results = jdbcTemplate.query(sql, new AvailabilityRowMapper(), tutorId, date, startTime);
         return results.isEmpty() ? null : results.get(0);
+    }
+
+    public List<TutorProfile> findTutors() {
+        String sql = "SELECT TutorID, TutorName FROM Tutor ORDER BY TutorName";
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+                new TutorProfile(rs.getLong("TutorID"), rs.getString("TutorName")));
+    }
+
+    public boolean insertAvailabilitySlot(Long tutorId, LocalDate date, LocalTime startTime, LocalTime endTime) {
+        String sql = """
+                INSERT INTO Availability (TutorID, Date, StartTime, EndTime)
+                VALUES (?, ?, ?, ?)
+                """;
+        return jdbcTemplate.update(sql, tutorId, date, startTime, endTime) > 0;
     }
 
     private static class AvailabilityRowMapper implements RowMapper<AvailabilitySlot> {

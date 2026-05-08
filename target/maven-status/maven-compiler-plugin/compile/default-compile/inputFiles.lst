@@ -7,6 +7,7 @@
 /Users/alexthan/Desktop/CMPE172_M3_WEB_Alex_Than/CMPE172-TUTOR-SCHEDULER/src/main/java/edu/sjsu/cmpe172/tutorscheduler/app/model/AppointmentRequest.java
 /Users/alexthan/Desktop/CMPE172_M3_WEB_Alex_Than/CMPE172-TUTOR-SCHEDULER/src/main/java/edu/sjsu/cmpe172/tutorscheduler/app/model/AvailabilitySlot.java
 /Users/alexthan/Desktop/CMPE172_M3_WEB_Alex_Than/CMPE172-TUTOR-SCHEDULER/src/main/java/edu/sjsu/cmpe172/tutorscheduler/app/model/Student.java
+/Users/alexthan/Desktop/CMPE172_M3_WEB_Alex_Than/CMPE172-TUTOR-SCHEDULER/src/main/java/edu/sjsu/cmpe172/tutorscheduler/app/model/TutorProfile.java
 /Users/alexthan/Desktop/CMPE172_M3_WEB_Alex_Than/CMPE172-TUTOR-SCHEDULER/src/main/java/edu/sjsu/cmpe172/tutorscheduler/app/model/integration/ProviderCalendarEventRequest.java
 /Users/alexthan/Desktop/CMPE172_M3_WEB_Alex_Than/CMPE172-TUTOR-SCHEDULER/src/main/java/edu/sjsu/cmpe172/tutorscheduler/app/model/integration/ProviderCalendarEventResponse.java
 /Users/alexthan/Desktop/CMPE172_M3_WEB_Alex_Than/CMPE172-TUTOR-SCHEDULER/src/main/java/edu/sjsu/cmpe172/tutorscheduler/app/repository/AppointmentRepository.java

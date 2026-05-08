@@ -18,13 +18,22 @@
             <a href="/slots">Browse Slots</a>
             <a class="active" href="/appointments">My Appointments</a>
         </div>
-        <div class="cta-wrap">
-            <a class="button" href="/appointments/new">Book a Session &rsaquo;</a>
-        </div>
+        <div class="cta-wrap"></div>
     </nav>
 
     <main class="panel">
         <div class="panel-body">
+            <div class="panel" th:if="${canceled}">
+                <div class="panel-body">
+                    <strong>Appointment canceled.</strong> The tutoring slot is available again.
+                </div>
+            </div>
+            <div class="panel" th:if="${cancelFailed}">
+                <div class="panel-body">
+                    <strong>Unable to cancel appointment.</strong> It may have already been removed.
+                </div>
+            </div>
+
             <div class="slots-header">
                 <div>
                     <h1>My Appointments</h1>
@@ -44,6 +53,7 @@
                     <th>Tutor</th>
                     <th>Subject</th>
                     <th>Location</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -56,6 +66,14 @@
                     <td th:text="${appointment.tutorName}"></td>
                     <td th:text="${appointment.subjectName}"></td>
                     <td th:text="${appointment.locationName}"></td>
+                    <td>
+                        <form th:if="${appointment.status != 'CANCELED'}"
+                              th:action="@{/appointments/{id}/cancel(id=${appointment.lessonId})}" method="post"
+                              onsubmit="return confirm('Are you sure you want to cancel?');">
+                            <button class="table-action" type="submit">Cancel</button>
+                        </form>
+                        <span th:if="${appointment.status == 'CANCELED'}" class="chip">Already canceled</span>
+                    </td>
                 </tr>
                 </tbody>
             </table>
